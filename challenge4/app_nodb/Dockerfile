@@ -13,7 +13,7 @@ WORKDIR /app
 COPY . .
 
 # Expose port
-EXPOSE 5000
+EXPOSE 5001
 
 # Run the application
-CMD [ "gunicorn", "-w", "1", "--bind", "0.0.0.0:5000", "wsgi"]
+CMD [ "gunicorn", "-w", "1", "--bind", "0.0.0.0:5001", "wsgi"]
