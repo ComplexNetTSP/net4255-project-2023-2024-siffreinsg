@@ -44,7 +44,7 @@ services:
     build:
       context: nginx
       dockerfile: Dockerfile
-    image: siffreinsg/net4255_webserver:latest
+    image: siffreinsg/net4255_c3_webserver:latest
     container_name: webserver
     environment:
       APP_ENV: "prod"
