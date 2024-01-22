@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webdb-deployment
+  namespace: siffreins
+  labels:
+    app: webdb
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webdb
+  template:
+    metadata:
+      labels:
+        app: webdb
+    spec:
+      containers:
+        - name: webdb-deployment
+          image: siffreinsg/net4255_webdb:v4
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          resources:
+            limits:
+              memory: "200M"
+              cpu: "500m"
+            requests:
+              memory: "100M"
+              cpu: "100m"
+          env:
+            - name: MONGODB_HOSTNAME
+              value: mongodb-service
+            - name: MONGODB_PORT
+              value: "27017"
+            - name: MONGODB_DATABASE
+              value: webdb
+            - name: MONGODB_USERNAME
+              value: root
+            - name: MONGODB_PASSWORD
+              value: pass
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webdb-service
+  namespace: siffreins
+spec:
+  type: NodePort
+  selector:
+    app: webdb
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000

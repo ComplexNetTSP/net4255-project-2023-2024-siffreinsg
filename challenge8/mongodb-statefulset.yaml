@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-statefulset
+  namespace: siffreins
+  labels:
+    app: mongodb
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+  serviceName: mongodb-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: mongodb-statefulset
+          image: mongodb/mongodb-community-server:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 27017
+          resources:
+            limits:
+              memory: "200M"
+              cpu: "500m"
+            requests:
+              memory: "100M"
+              cpu: "100m"
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: root
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: pass
+            - name: MONGO_INITDB_DATABASE
+              value: webdb
+            - name: MONGODB_DATADIR
+              value: /data/db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+  namespace: siffreins
+spec:
+  clusterIP: None
+  selector:
+    app: mongodb
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
