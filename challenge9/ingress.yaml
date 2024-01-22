@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Ingress
+metadata:
+  name: web-ingress
+  namespace: siffreins
+spec:
+  rules:
+    - host: webnodb.siffrein.net4255.luxbulb.org
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: webnodb
+              servicePort: 80
+    - host: webdb.siffrein.net4255.luxbulb.org
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: webdb
+              servicePort: 80
