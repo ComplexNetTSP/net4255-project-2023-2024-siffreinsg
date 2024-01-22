@@ -27,7 +27,7 @@ def hello_world():
     html = f"""
 <h1>Hello !</h1>
 <p>Créé par Siffrein SIGY</p>
-<p>Projet Kubernetes v2</p>
+<p>Projet Kubernetes v4</p>
 <p>Hostname: {socket.gethostname()}</p>
 <p>Date: {datetime.now()}</p>
 """

@@ -1,16 +1,16 @@
 version: '3'
 services:
-  flask_db:
+  webdb:
     build:
-      context: app_db
+      context: webdb
       dockerfile: Dockerfile
-    container_name: flask_db
-    image: siffreinsg/net4255_challenge4_db:latest
+    container_name: webdb
+    image: siffreinsg/net4255_webdb:v4
     environment:
       APP_ENV: "prod"
       APP_DEBUG: "false"
       APP_PORT: 5000
-      MONGODB_DATABASE: flaskdb
+      MONGODB_DATABASE: webdb
       MONGODB_USERNAME: root
       MONGODB_PASSWORD: pass
       MONGODB_HOSTNAME: mongodb
@@ -18,27 +18,27 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - appdbdata:/app
+      - webdbdata:/app
     depends_on:
       - mongodb
     networks:
       - frontend
       - backend
 
-  flask_nodb:
+  webnodb:
     build:
-      context: app_nodb
+      context: webnodb
       dockerfile: Dockerfile
-    container_name: flask_nodb
-    image: siffreinsg/net4255_challenge4_nodb:latest
+    container_name: webnodb
+    image: siffreinsg/net4255_webnodb:v4
     environment:
       APP_ENV: "prod"
       APP_DEBUG: "false"
-      APP_PORT: 5001
+      APP_PORT: 5000
     ports:
-      - "5001:5001"
+      - "5001:5000"
     volumes:
-      - appdata:/app
+      - webnodbdata:/app
     networks:
       - frontend
       - backend
@@ -50,7 +50,7 @@ services:
     environment:
       MONGODB_INITDB_ROOT_USERNAME: root
       MONGODB_INITDB_ROOT_PASSWORD: pass
-      MONGODB_INITDB_DATABASE: flaskdb
+      MONGODB_INITDB_DATABASE: webdb
       MONGODB_DATA_DIR: /data/db
       MONGODB_LOG_DIR: /dev/null
     volumes:
@@ -62,7 +62,7 @@ services:
     build:
       context: nginx
       dockerfile: Dockerfile
-    image: siffreinsg/net4255_c4_webserver:latest
+    image: siffreinsg/net4255_webserver:v4
     container_name: webserver
     environment:
       APP_ENV: "prod"
@@ -73,10 +73,10 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - nginxdata:/var/log/nginx
+      - webserverdata:/var/log/nginx
     depends_on:
-      - flask_db
-      - flask_nodb
+      - webdb
+      - webnodb
     networks:
       - frontend
 
@@ -90,9 +90,9 @@ networks:
 volumes:
   dbdata:
     driver: local
-  appdbdata:
+  webdbdata:
     driver: local
-  appdata:
+  webnodbdata:
     driver: local
-  nginxdata:
+  webserverdata:
     driver: local
