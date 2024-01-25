@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webnodb-deployment
+  namespace: siffreins
+  labels:
+    app: webnodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webnodb
+  template:
+    metadata:
+      labels:
+        app: webnodb
+    spec:
+      containers:
+        - name: webnodb-deployment
+          image: siffreinsg/net4255_webnodb:v12
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          resources:
+            limits:
+              memory: "200M"
+              cpu: "200m"
+            requests:
+              memory: "100M"
+              cpu: "50m"
