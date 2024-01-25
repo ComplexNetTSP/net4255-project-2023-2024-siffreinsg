@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-ingress
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    # kubernetes.io/ingress.global-static-ip-name: "web-static-ip"
+    kubernetes.io/ingress.allow-http: "true"
+spec:
+  rules:
+    - host: {{ .Values.webnodb.host }}
+      http:
+        paths:
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: webnodb-service
+                port:
+                  number: 80
+    - host: {{ .Values.webdb.host }}
+      http:
+        paths:
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: webdb-service
+                port:
+                  number: 80
