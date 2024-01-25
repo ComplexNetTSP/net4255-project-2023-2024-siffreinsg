@@ -4,19 +4,24 @@ metadata:
   name: mongodb-pv
 spec:
   capacity:
-    storage: 256Mi
+    storage: {{ .Values.db.storage }}
   accessModes:
     - ReadWriteOnce
   hostPath:
     path: /data/db
+    type: ""
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
+  volumeMode: Filesystem
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mongodb-pvc
 spec:
+  storageClassName: standard
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 256Mi
+      storage: {{ .Values.db.storage }}

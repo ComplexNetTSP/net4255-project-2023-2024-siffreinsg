@@ -18,7 +18,8 @@ spec:
       containers:
         - name: mongodb-deployment
           image: mongodb/mongodb-community-server:latest
-          imagePullPolicy: onlyIfNotPresent
+          imagePullPolicy: IfNotPresent
+          restartPolicy: Always
           ports:
             - containerPort: 27017
           volumeMounts:
@@ -26,18 +27,27 @@ spec:
               mountPath: /data/db
           resources:
             limits:
-              memory: "200M"
-              cpu: "500m"
+              cpu: {{ .Values.resources.db.limits.cpu }}
+              memory: {{ .Values.resources.db.limits.memory }}
             requests:
-              memory: "100M"
-              cpu: "100m"
+              cpu: {{ .Values.resources.db.requests.cpu }}
+              memory: {{ .Values.resources.db.requests.memory }}
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
-              value: root
+              valueFrom:
+                configMapKeyRef:
+                  name: webdb-configmap
+                  key: MONGO_INITDB_ROOT_USERNAME
             - name: MONGO_INITDB_ROOT_PASSWORD
-              value: pass
+              valueFrom:
+                configMapKeyRef:
+                  name: webdb-configmap
+                  key: MONGO_INITDB_ROOT_PASSWORD
             - name: MONGO_INITDB_DATABASE
-              value: webdb
+              valueFrom:
+                configMapKeyRef:
+                  name: webdb-configmap
+                  key: MONGO_INITDB_DATABASE
             - name: MONGODB_DATADIR
               value: /data/db
       volumes:
@@ -53,6 +63,7 @@ metadata:
 spec:
   selector:
     app: mongodb
+  clusterIP: None
   ports:
     - protocol: TCP
       port: 27017
