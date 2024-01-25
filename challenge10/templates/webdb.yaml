@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webdb-deployment
-  namespace: siffreins
+  namespace: {{ .Release.Namespace }}
   labels:
     app: webdb
 spec:
@@ -53,7 +53,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: webdb-service
-  namespace: siffreins
+  namespace: {{ .Release.Namespace }}
 spec:
   type: NodePort
   selector:
