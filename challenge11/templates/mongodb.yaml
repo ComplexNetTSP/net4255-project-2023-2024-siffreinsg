@@ -1,30 +1,32 @@
-apiVersion: v1
-kind: Deployment
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
-  name: mongodb-deployment
-  namespace: siffreins
+  name: mongodb-statefulset
+  namespace: {{ .Release.Namespace }}
   labels:
     app: mongodb
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: mongodb
+  serviceName: mongodb
+  replicas: 1
   template:
     metadata:
       labels:
         app: mongodb
     spec:
       containers:
-        - name: mongodb-deployment
+        - name: mongodb
           image: mongodb/mongodb-community-server:latest
           imagePullPolicy: IfNotPresent
           restartPolicy: Always
           ports:
-            - containerPort: 27017
+          - name: mongodb
+            containerPort: 27017
           volumeMounts:
-            - name: mongodb-pv
-              mountPath: /data/db
+          - name: dbdata
+            mountPath: /data/db
           resources:
             limits:
               cpu: {{ .Values.resources.db.limits.cpu }}
@@ -50,21 +52,27 @@ spec:
                   key: MONGO_INITDB_DATABASE
             - name: MONGODB_DATADIR
               value: /data/db
-      volumes:
-        - name: mongodb-pv
-          persistentVolumeClaim:
-            claimName: mongodb-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: dbdata
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.resources.db.storage }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mongodb-service
-  namespace: siffreins
-spec:
-  selector:
+  namespace: {{ .Release.Namespace }}
+  labels:
     app: mongodb
-  clusterIP: None
+spec:
   ports:
-    - protocol: TCP
+    - name: mongodb
       port: 27017
       targetPort: 27017
+  clusterIP: None
+  selector:
+    app: mongodb

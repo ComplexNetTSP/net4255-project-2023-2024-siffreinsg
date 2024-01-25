@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: webdb-configmap
+  namespace: {{ .Release.Namespace }}
 data:
   MONGO_INITDB_ROOT_USERNAME: {{ .Values.db.username }}
   MONGO_INITDB_ROOT_PASSWORD: {{ .Values.db.password }}

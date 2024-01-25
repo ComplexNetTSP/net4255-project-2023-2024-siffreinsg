@@ -2,7 +2,6 @@ db:
   username: root
   password: pass
   database: webdb
-  storage: "100M"
 
 webdb:
   host: webdb.siffreins.net4255.luxbulb.org
@@ -12,6 +11,7 @@ webnodb:
 
 resources:
   db:
+    storage: "100M"
     limits:
       cpu: "100m"
       memory: "128Mi"
